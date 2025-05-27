@@ -24,6 +24,11 @@
     "typescript": "^5.8.3",
     "vitest": "^2.1.8"
   },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
+  },
   "version": "1.0.17",
   "keywords": [],
   "author": "",
