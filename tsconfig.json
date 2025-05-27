@@ -1,0 +1,21 @@
+{
+  "include": ["packages/**/*.ts"],
+  "exclude": ["**/*.test.ts"],
+  "compilerOptions": {
+    "module": "Node16",
+    "target": "ESNext",
+    "lib": [
+            "ESNext",
+            "DOM",
+            "WebWorker"
+        ],
+    "declaration": true,
+    "strict": true,
+    "moduleResolution": "node16",
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "outDir": "dist",
+    "rootDir": "packages",
+    "baseUrl": "./",
+  }
+}

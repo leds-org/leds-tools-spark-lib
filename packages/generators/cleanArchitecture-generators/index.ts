@@ -1,0 +1,1 @@
+export { generate as generator } from '../cleanArchitecture-generators/generator.js';

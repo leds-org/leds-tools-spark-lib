@@ -1,0 +1,1 @@
+export { generate as generateAuthentication } from '../Authenticate/generate.js';

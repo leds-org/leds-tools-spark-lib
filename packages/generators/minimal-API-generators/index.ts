@@ -1,0 +1,1 @@
+export { generate as generator } from '../minimal-API-generators/generator.js';
