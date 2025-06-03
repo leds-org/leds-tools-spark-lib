@@ -46,3 +46,22 @@ jobs:
       - name: Push tag e versionamento para o GitHub
         run: |
           git push origin develop --follow-tags
+
+      - name : Enviar email de notificação
+        uses:  dawidd6/action-send-mail@v3
+        with: 
+              server_address: smtp.gmail.com
+              server_port: 465
+              secure: true
+              username: ${{ secrets.EMAIL_USER }}
+              password: ${{ secrets.EMAIL_PASS }}
+              subject: "📦 Novo pacote publicado: v${{ steps.package_version.outputs.version }}"
+              body:  |
+                  ✅ Publicação concluída com sucesso!,
+                  
+                  📁 Repositório: ${{ github.repository }}
+                  🔖 Versão: v${{ steps.package_version.outputs.version }}
+                  🔗 Commit: https://github.com/$%7B%7B github.repository }}/commit/${{ github.sha }}
+                  📦 NPM: https://www.npmjs.com/package/spark-generators-lib
+                  to: caiochiabaioliveira@gmail.com
+                  from: GitHub Actions <${{ secrets.EMAIL_USER }}>
