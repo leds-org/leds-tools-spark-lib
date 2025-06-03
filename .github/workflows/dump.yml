@@ -63,5 +63,5 @@ jobs:
                   🔖 Versão: v${{ steps.package_version.outputs.version }}
                   🔗 Commit: https://github.com/$%7B%7B github.repository }}/commit/${{ github.sha }}
                   📦 NPM: https://www.npmjs.com/package/spark-generators-lib
-                  to: caiochiabaioliveira@gmail.com
-                  from: GitHub Actions <${{ secrets.EMAIL_USER }}>
+              to: caiochiabaioliveira@gmail.com
+              from: GitHub Actions <${{ secrets.EMAIL_USER }}>
