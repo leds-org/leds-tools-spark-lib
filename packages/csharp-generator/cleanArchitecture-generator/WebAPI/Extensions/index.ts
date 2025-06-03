@@ -1,0 +1,1 @@
+export { generate as generateWebExtensions } from './generate.js';

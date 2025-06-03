@@ -1,0 +1,1 @@
+export { generate as generateInfraMigrations } from './generate.js';
