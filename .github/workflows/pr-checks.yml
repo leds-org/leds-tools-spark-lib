@@ -50,3 +50,22 @@ jobs:
             🙋‍♂️ Autor: ${{ github.event.pull_request.user.login }}
           to: caiochiabaioliveira@gmail.com
           from: "GitHub Actions <${{ secrets.EMAIL_USER }}>"    
+
+      - name: Enviar email de falha
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          subject: ❌ CI falhou - ${{ github.repository }}
+          to: caiochiabaioliveira@gmail.com
+          from: GitHub Actions <${{ secrets.EMAIL_USER }}>
+          body: |
+            ❌ CI falhou durante os testes ou build!
+
+            📁 Repositório: ${{ github.repository }}
+            🔗 Pull Request: https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
+            🧪 Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}    

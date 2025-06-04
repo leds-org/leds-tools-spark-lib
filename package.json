@@ -32,5 +32,8 @@
   "version": "1.0.17",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "spark-generators-lib": "^1.13.0"
+  }
 }
