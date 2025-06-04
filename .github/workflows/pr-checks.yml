@@ -30,3 +30,23 @@ jobs:
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+      - name: Enviar email de notificação
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USER }}
+          password: ${{ secrets.EMAIL_PASS }}
+          subject: "✅ Verificação concluída com sucesso - PR #${{ github.event.pull_request.number }}"
+          body: |
+            ✅ Todas as verificações foram concluídas com sucesso para o Pull Request #${{ github.event.pull_request.number }}.
+
+            🔗 Link do PR: ${{ github.event.pull_request.html_url }}
+            📁 Repositório: ${{ github.repository }}
+            🔍 Branch: ${{ github.head_ref }}
+            🙋‍♂️ Autor: ${{ github.event.pull_request.user.login }}
+          to: caiochiabaioliveira@gmail.com
+          from: "GitHub Actions <${{ secrets.EMAIL_USER }}>"    
