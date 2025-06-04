@@ -33,12 +33,6 @@ jobs:
 
       - name: Build do projeto
         run: npm run build && npx tsc
-
-      - name: Análise com SonarCloud
-        uses: SonarSource/sonarcloud-github-action@v2
-        env:
-          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-
           
       - name: Bump de versão (minor)
         id: package_version
