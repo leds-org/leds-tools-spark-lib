@@ -64,8 +64,27 @@ jobs:
           to: caiochiabaioliveira@gmail.com
           from: GitHub Actions <${{ secrets.EMAIL_USER }}>
           body: |
-            ❌ CI falhou durante os testes ou build!
 
-            📁 Repositório: ${{ github.repository }}
-            🔗 Pull Request: https://github.com/${{ github.repository }}/pull/${{ github.event.pull_request.number }}
-            🧪 Commit: https://github.com/${{ github.repository }}/commit/${{ github.sha }}    
+                <div style="font-family: sans-serif; padding: 16px;">
+                <h2 style="color: #2e6da4;">✅ Publicação concluída com sucesso!</h2>
+                <p><strong>📁 Repositório:</strong> <a href="https://github.com/${{ github.repository }}">{{ github.repository }}</a></p>
+                <p><strong>🔖 Versão:</strong> v${{ steps.package_version.outputs.version }}</p>
+                  <p><strong>🔗 Commit:</strong> <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">
+                    ${{ github.sha }}</a></p>
+                  <p><strong>📦 NPM:</strong> <a href="https://www.npmjs.com/package/spark-generators-lib">
+                    spark-generators-lib</a></p>
+
+                  <hr style="margin-top: 24px;" />
+                  <p style="font-size: 0.9em; color: #999;">Este e-mail foi enviado automaticamente pelo GitHub Actions.</p>
+                </div>
+
+
+
+
+
+
+
+
+
+
+            
