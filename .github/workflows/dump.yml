@@ -81,11 +81,10 @@ jobs:
               password: ${{ secrets.EMAIL_PASS }}
               subject: "📦 Novo pacote publicado: v${{ steps.package_version.outputs.version }}"
               body:  |
-                  ✅ Publicação concluída com sucesso!,
+                  ✅ Publicação concluída com sucesso!
                   
                   📁 Repositório: ${{ github.repository }}
-                  🔖 Versão: v${{ steps.package_version.outputs.version }}
-                  🔗 Commit: https://github.com/$%7B%7B github.repository }}/commit/${{ github.sha }}
+                  🔖 Versão: ${{ steps.package_version.outputs.version }}
                   📦 NPM: https://www.npmjs.com/package/spark-generators-lib
-              to: caiochiabaioliveira@gmail.com
+              to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com
               from: GitHub Actions <${{ secrets.EMAIL_USER }}>
