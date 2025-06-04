@@ -32,7 +32,7 @@ jobs:
           npm ci
 
       - name: Build do projeto
-        run: npm run build
+        run: npm run build && npx tsc
 
       - name: Análise com SonarCloud
         uses: SonarSource/sonarcloud-github-action@v2
