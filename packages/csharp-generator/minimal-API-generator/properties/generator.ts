@@ -92,3 +92,5 @@ function createLaunchSettingsJSON(): string {
   }
   `
 }
+
+export { createPropertiesJSON, createLaunchSettingsJSON };
