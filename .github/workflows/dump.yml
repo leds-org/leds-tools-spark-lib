@@ -39,9 +39,14 @@ jobs:
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+          
       - name: Bump de versão (minor)
+        id: package_version
         run: |
-          npm version minor -m "ci: release %s [skip ci]"
+          VERSION=$(npm version minor -m "ci: release %s [skip ci]") # Removido o '|' extra e indentado corretamente
+          echo "version=$VERSION" >> $GITHUB_OUTPUT    
+
+    
 
       - name: Publicar no NPM
         run: npm publish
