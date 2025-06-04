@@ -34,6 +34,11 @@ jobs:
       - name: Build do projeto
         run: npm run build
 
+      - name: Análise com SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
       - name: Bump de versão (minor)
         run: |
           npm version minor -m "ci: release %s [skip ci]"
