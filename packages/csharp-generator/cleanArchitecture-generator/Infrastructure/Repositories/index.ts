@@ -1,0 +1,1 @@
+export { generate as generateInfraRepositories } from './generator.js';

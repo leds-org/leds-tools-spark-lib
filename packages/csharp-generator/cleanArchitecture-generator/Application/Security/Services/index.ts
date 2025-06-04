@@ -1,0 +1,1 @@
+export { generate as generateSecurityservices } from '../Services/generate.js';
