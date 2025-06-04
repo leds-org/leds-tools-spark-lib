@@ -86,5 +86,5 @@ jobs:
                 📁 Repositório: ${{ github.repository }}
                 🔖 Versão: v${{ steps.package_version.outputs.version }}              
                 📦 NPM: https://www.npmjs.com/package/spark-generators-lib
-              to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com
+              to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com, lemelting53@gmail.com
               from: GitHub Actions <${{ secrets.EMAIL_USER }}>
