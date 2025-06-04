@@ -50,7 +50,7 @@ jobs:
 
       - name: Push tag e versionamento para o GitHub
         run: |
-          git push origin develop --follow-tags
+          git push origin main --follow-tags
 
       - name : Enviar email de notificação
         uses:  dawidd6/action-send-mail@v3
