@@ -41,6 +41,7 @@ jobs:
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
           subject: "✅ Verificação concluída com sucesso - PR #${{ github.event.pull_request.number }}"
+          content_type : text/html
           body: |
 
                 <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #f9f9f9; color: #333;">
