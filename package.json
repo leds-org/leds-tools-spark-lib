@@ -22,7 +22,7 @@
     "langium": "^3.5.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.9"
   },
   "config": {
     "commitizen": {
