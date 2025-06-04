@@ -42,12 +42,29 @@ jobs:
           password: ${{ secrets.EMAIL_PASS }}
           subject: "✅ Verificação concluída com sucesso - PR #${{ github.event.pull_request.number }}"
           body: |
-            ✅ Todas as verificações foram concluídas com sucesso para o Pull Request #${{ github.event.pull_request.number }}.
 
-            🔗 Link do PR: ${{ github.event.pull_request.html_url }}
-            📁 Repositório: ${{ github.repository }}
-            🔍 Branch: ${{ github.head_ref }}
-            🙋‍♂️ Autor: ${{ github.event.pull_request.user.login }}
+                <div style="font-family: Arial, sans-serif; padding: 24px; background-color: #f9f9f9; color: #333;">
+                <div style="max-width: 600px; margin: auto; background: #fff; border-radius: 8px; padding: 24px; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                <h1 style="color: #2c3e50; font-size: 24px; margin-bottom: 16px;">
+                ✅ Novo release publicado: <span style="color:#27ae60;">v${{ steps.package_version.outputs.version }}</span>
+                </h1>
+                 <p style="margin: 8px 0;"><strong>📁 Repositório:</strong> <a href="https://github.com/${{ github.repository }}" style="color: #2980b9;">${{ github.repository }}</a></p>
+                  <p style="margin: 8px 0;"><strong>🔖 Versão:</strong> v${{ steps.package_version.outputs.version }}</p>
+                  <p style="margin: 8px 0;"><strong>🔗 Commit:</strong> <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}" style="color: #2980b9;">${{ github.sha }}</a></p>
+                  
+                  <div style="text-align: center; margin: 24px 0;">
+                    <a href="https://www.npmjs.com/package/spark-generators-lib" style="background: #e74c3c; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold;">
+                      📦 Ver no NPM
+                    </a>
+                  </div>
+              
+                  <hr style="border: none; border-top: 1px solid #eee; margin: 32px 0;" />
+              
+                  <p style="font-size: 12px; color: #999; text-align: center;">
+                    Este e-mail foi enviado automaticamente pelo GitHub Actions após publicação no NPM.
+                  </p>
+                </div></div>
+
           to: caiochiabaioliveira@gmail.com
           from: "GitHub Actions <${{ secrets.EMAIL_USER }}>"    
 
