@@ -32,16 +32,19 @@ jobs:
           npm ci
 
       - name: Build do projeto
-        run: npm run build
+        run: npm run build && npx tsc
 
       - name: Análise com SonarCloud
         uses: SonarSource/sonarcloud-github-action@v2
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
 
+          
       - name: Bump de versão (minor)
+        id: package_version
         run: |
-          npm version minor -m "ci: release %s [skip ci]"
+          VERSION=$(npm version minor -m "ci: release %s [skip ci]") # Removido o '|' extra e indentado corretamente
+          echo "version=$VERSION" >> $GITHUB_OUTPUT    
 
       - name: Publicar no NPM
         run: npm publish
@@ -50,7 +53,23 @@ jobs:
 
       - name: Push tag e versionamento para o GitHub
         run: |
-          git push origin develop --follow-tags
+          git push origin main --follow-tags
+
+      - name: Apagar tags antigas
+        run: |
+          # Obtém a tag mais recente (a última criada)
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+
+          echo "Mantendo a tag mais recente: $latest_tag"
+
+          # Lista todas as tags, exclui a mais recente e deleta as demais
+          for tag in $(git tag); do
+            if [ "$tag" != "$latest_tag" ]; then
+              git push --delete origin "$tag"
+              git tag -d "$tag"
+              echo "Tag apagada: $tag"
+            fi
+          done
 
       - name : Enviar email de notificação
         uses:  dawidd6/action-send-mail@v3
@@ -61,6 +80,11 @@ jobs:
               username: ${{ secrets.EMAIL_USER }}
               password: ${{ secrets.EMAIL_PASS }}
               subject: "📦 Novo pacote publicado: v${{ steps.package_version.outputs.version }}"
-              body: <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:20px;border:1px solid #ccc;border-radius:10px;"> <h2 style="color:#2d8cf0;">📦 Novo pacote publicado com sucesso!</h2> <table style="width:100%;margin-top:20px;"> <tr> <td style="font-weight:bold;">📁 Repositório:</td> <td><a href="https://github.com/${{ github.repository }}" style="color:#2d8cf0;">${{ github.repository }}</a></td> </tr> <tr> <td style="font-weight:bold;">🔖 Versão:</td> <td>v${{ steps.package_version.outputs.version }}</td> </tr> <tr> <td style="font-weight:bold;">🔗 Commit:</td> <td><a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}" style="color:#2d8cf0;">Ver Commit</a></td> </tr> <tr> <td style="font-weight:bold;">📦 NPM:</td> <td><a href="https://www.npmjs.com/package/spark-generators-lib" style="color:#2d8cf0;">spark-generators-lib</a></td> </tr> </table> <p style="margin-top:20px;">✅ Tudo certo! O pacote foi publicado com sucesso.</p> </div>
+              body: |
+                ✅ Publicação concluída com sucesso!
+        
+                📁 Repositório: ${{ github.repository }}
+                🔖 Versão: v${{ steps.package_version.outputs.version }}              
+                📦 NPM: https://www.npmjs.com/package/spark-generators-lib
               to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com
               from: GitHub Actions <${{ secrets.EMAIL_USER }}>
