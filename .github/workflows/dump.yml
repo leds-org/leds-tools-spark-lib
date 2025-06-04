@@ -46,8 +46,6 @@ jobs:
           VERSION=$(npm version minor -m "ci: release %s [skip ci]") # Removido o '|' extra e indentado corretamente
           echo "version=$VERSION" >> $GITHUB_OUTPUT    
 
-    
-
       - name: Publicar no NPM
         run: npm publish
         env:
@@ -56,6 +54,22 @@ jobs:
       - name: Push tag e versionamento para o GitHub
         run: |
           git push origin main --follow-tags
+
+      - name: Apagar tags antigas
+        run: |
+          # Obtém a tag mais recente (a última criada)
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+
+          echo "Mantendo a tag mais recente: $latest_tag"
+
+          # Lista todas as tags, exclui a mais recente e deleta as demais
+          for tag in $(git tag); do
+            if [ "$tag" != "$latest_tag" ]; then
+              git push --delete origin "$tag"
+              git tag -d "$tag"
+              echo "Tag apagada: $tag"
+            fi
+          done
 
       - name : Enviar email de notificação
         uses:  dawidd6/action-send-mail@v3
