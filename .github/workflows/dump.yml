@@ -80,11 +80,6 @@ jobs:
               username: ${{ secrets.EMAIL_USER }}
               password: ${{ secrets.EMAIL_PASS }}
               subject: "📦 Novo pacote publicado: v${{ steps.package_version.outputs.version }}"
-              body:  |
-                  ✅ Publicação concluída com sucesso!
-                  
-                  📁 Repositório: ${{ github.repository }}
-                  🔖 Versão: ${{ steps.package_version.outputs.version }}
-                  📦 NPM: https://www.npmjs.com/package/spark-generators-lib
+              body: <div style="font-family:Arial,sans-serif;max-width:600px;margin:auto;padding:20px;border:1px solid #ccc;border-radius:10px;"> <h2 style="color:#2d8cf0;">📦 Novo pacote publicado com sucesso!</h2> <table style="width:100%;margin-top:20px;"> <tr> <td style="font-weight:bold;">📁 Repositório:</td> <td><a href="https://github.com/${{ github.repository }}" style="color:#2d8cf0;">${{ github.repository }}</a></td> </tr> <tr> <td style="font-weight:bold;">🔖 Versão:</td> <td>v${{ steps.package_version.outputs.version }}</td> </tr> <tr> <td style="font-weight:bold;">🔗 Commit:</td> <td><a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}" style="color:#2d8cf0;">Ver Commit</a></td> </tr> <tr> <td style="font-weight:bold;">📦 NPM:</td> <td><a href="https://www.npmjs.com/package/spark-generators-lib" style="color:#2d8cf0;">spark-generators-lib</a></td> </tr> </table> <p style="margin-top:20px;">✅ Tudo certo! O pacote foi publicado com sucesso.</p> </div>
               to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com
               from: GitHub Actions <${{ secrets.EMAIL_USER }}>
