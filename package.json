@@ -22,7 +22,7 @@
     "langium": "^3.5.0",
     "tsup": "^8.4.0",
     "typescript": "^5.8.3",
-    "vitest": "^2.1.8"
+    "vitest": "^2.1.9"
   },
   "config": {
     "commitizen": {
@@ -32,5 +32,8 @@
   "version": "1.13.0",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "spark-generators-lib": "^1.13.0"
+  }
 }
