@@ -33,6 +33,15 @@ jobs:
 
       - name: Build do projeto
         run: npm run build && npx tsc
+
+
+
+      - name: Análise com SonarCloud
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+
           
       - name: Bump de versão (minor)
         id: package_version
@@ -47,7 +56,23 @@ jobs:
 
       - name: Push tag e versionamento para o GitHub
         run: |
-          git push origin develop --follow-tags
+          git push origin main --follow-tags
+
+      - name: Apagar tags antigas
+        run: |
+          # Obtém a tag mais recente (a última criada)
+          latest_tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+
+          echo "Mantendo a tag mais recente: $latest_tag"
+
+          # Lista todas as tags, exclui a mais recente e deleta as demais
+          for tag in $(git tag); do
+            if [ "$tag" != "$latest_tag" ]; then
+              git push --delete origin "$tag"
+              git tag -d "$tag"
+              echo "Tag apagada: $tag"
+            fi
+          done
 
       - name: Apagar tags antigas
         run: |
@@ -77,7 +102,7 @@ jobs:
               secure: true
               username: ${{ secrets.EMAIL_USER }}
               password: ${{ secrets.EMAIL_PASS }}
-              subject: "📦 Novo pacote publicado: v${{ steps.package_version.outputs.version }}"
+              subject: "📦 Novo pacote publicado: v${{ steps.package_version.outputs.version
               html_body:  <p>O pacote foi publicado com sucesso no NPM.</p>
 
                 <ul>
@@ -102,3 +127,12 @@ jobs:
                 </div>
               to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com, lemelting53@gmail.com
               from: GitHub Actions <${{ secrets.EMAIL_USER }}>
+              body: |
+                ✅ Publicação concluída com sucesso!
+        
+                📁 Repositório: ${{ github.repository }}
+                🔖 Versão: v${{ steps.package_version.outputs.version }}              
+                📦 NPM: https://www.npmjs.com/package/spark-generators-lib
+              to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com, lemelting53@gmail.com
+              from: GitHub Actions <${{ secrets.EMAIL_USER }}>
+
