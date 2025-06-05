@@ -89,7 +89,7 @@ jobs:
                  </div>
                </div>
 
-          to: caiochiabaioliveira@gmail.com, lemelting53@gmail.com
+          to: caiochiabaioliveira@gmail.com, lemelting53@gmail.com,  diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com 
           from: "GitHub Actions <${{ secrets.EMAIL_USER }}>"    
 
       - name: Enviar email de falha
@@ -102,7 +102,7 @@ jobs:
           username: ${{ secrets.EMAIL_USER }}
           password: ${{ secrets.EMAIL_PASS }}
           subject: ❌ CI falhou - ${{ github.repository }}
-          to: caiochiabaioliveira@gmail.com
+          to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com
           from: GitHub Actions <${{ secrets.EMAIL_USER }}>
           html_body: |
 

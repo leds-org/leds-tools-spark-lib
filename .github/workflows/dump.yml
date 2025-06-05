@@ -64,7 +64,11 @@ jobs:
               echo "Tag apagada: $tag"
             fi
           done
+      - name: Definir timestamp
+        id: date
+        run: echo "timestamp=$(date -u '+%Y-%m-%d %H:%M:%S UTC')" >> "$GITHUB_OUTPUT"
 
+        
       - name : Enviar email de notificação
         uses:  dawidd6/action-send-mail@v3
         with: 
@@ -74,11 +78,27 @@ jobs:
               username: ${{ secrets.EMAIL_USER }}
               password: ${{ secrets.EMAIL_PASS }}
               subject: "📦 Novo pacote publicado: v${{ steps.package_version.outputs.version }}"
-              body: |
-                ✅ Publicação concluída com sucesso!
-        
-                📁 Repositório: ${{ github.repository }}
-                🔖 Versão: v${{ steps.package_version.outputs.version }}              
-                📦 NPM: https://www.npmjs.com/package/spark-generators-lib
-              to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com
+              html_body:  <p>O pacote foi publicado com sucesso no NPM.</p>
+
+                <ul>
+                  <li><strong>📁 Repositório:</strong> ${{ github.repository }}</li>
+                  <li><strong>🔖 Versão:</strong> ${{ steps.package_version.outputs.version }}</li>
+                  <li><strong>🕒 Data:</strong> ${{ github.event.head_commit.timestamp }}</li>
+                  <li><strong>👤 Autor:</strong> ${{ github.event.head_commit.author.name }}</li>
+                  <li><strong>🔗 Commit:</strong>
+                    <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">
+                      Ver commit
+                    </a>
+                  </li>
+                </ul>
+
+                <a class="button" href="https://www.npmjs.com/package/spark-generators-lib" target="_blank">
+                  Acessar pacote no NPM
+                </a>
+
+                <div class="footer">
+                  Enviado automaticamente por GitHub Actions • spark-generators-lib
+                </div>
+                </div>
+              to: caiochiabaioliveira@gmail.com, diegobrangel8@gmail.com, valentimcaldeira100@gmail.com, Lucas.codeco2@gmail.com, brunoowcx1@gmail.com, lemelting53@gmail.com
               from: GitHub Actions <${{ secrets.EMAIL_USER }}>
