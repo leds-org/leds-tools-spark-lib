@@ -1,4 +1,4 @@
-import { Model } from "../../../../shared/ast.js"
+import { Model } from "../../../../models/ast.js"
 import fs from "fs"
 import { generate as generateAccount } from "./Account/generate.js"
 import { generate as generateShared } from "./Shared/generate.js"

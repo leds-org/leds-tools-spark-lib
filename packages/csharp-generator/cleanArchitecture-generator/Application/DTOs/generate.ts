@@ -1,9 +1,9 @@
 import { CompositeGeneratorNode, Generated, expandToString, expandToStringWithNL } from "langium/generate"
-import { Attribute, EnumEntityAtribute, LocalEntity, Model, isLocalEntity, isModule } from "../../../../shared/ast.js"
+import { Attribute, EnumEntityAtribute, LocalEntity, Model, isLocalEntity, isModule, getRef } from "../../../../models/ast.js"
 import fs from "fs"
 import path from "path"
-import { capitalizeString } from "../../../../shared/generator-utils.js"
-import { RelationInfo, processRelations } from "../../../../shared/relations.js"
+import { capitalizeString } from "../../../../models/generator-utils.js"
+import { RelationInfo, processRelations } from "../../../../models/relations.js"
 export function generate(model: Model, target_folder: string) : void {
 
   const common_folder = target_folder + '/Common'
@@ -170,10 +170,10 @@ function generateRelationsResponse(cls: LocalEntity, relations: RelationInfo[]) 
  */
 function getAttrsAndRelations(cls: LocalEntity, relation_map: Map<LocalEntity, RelationInfo[]>) : {attributes: Attribute[], relations: RelationInfo[]} {
     // Se tem superclasse, puxa os atributos e relações da superclasse
-    if(cls.superType?.ref != null && isLocalEntity(cls.superType?.ref)) {
-      const parent =  cls.superType?.ref
+    const superType = getRef(cls.superType);
+    if(superType && isLocalEntity(superType)) {
+      const parent = superType;
       const {attributes, relations} = getAttrsAndRelations(parent, relation_map)
-  
       return {
         attributes: attributes.concat(cls.attributes),
         relations: relations.concat(relation_map.get(cls) ?? [])
@@ -187,8 +187,9 @@ function getAttrsAndRelations(cls: LocalEntity, relation_map: Map<LocalEntity, R
   }
 
   function createEnum(enumEntityAtribute: EnumEntityAtribute):string {
+    const enumType = getRef(enumEntityAtribute.type);
     return expandToString`
-    public ${enumEntityAtribute.type.ref?.name} ${capitalizeString(enumEntityAtribute.type.ref?.name || "")} { get; set; }
+    public ${enumType?.name} ${capitalizeString(enumType?.name || "")} { get; set; }
     `
   }
   

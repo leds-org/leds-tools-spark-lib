@@ -1,9 +1,9 @@
 import { Generated, expandToString } from "langium/generate";
-import { Attribute, EnumEntityAtribute, LocalEntity, Model } from "../../../../../../shared/ast.js"
+import { Attribute, EnumEntityAtribute, LocalEntity, Model, getRef } from "../../../../../../models/ast.js"
 import fs from "fs"
 import path from "path";
-import { capitalizeString } from "../../../../../../shared/generator-utils.js";
-import { RelationInfo } from "../../../../../../shared/relations.js";
+import { capitalizeString } from "../../../../../../models/generator-utils.js";
+import { RelationInfo } from "../../../../../../models/relations.js";
 
 export function generate(model: Model, target_folder: string, cls: LocalEntity, relations: RelationInfo[]) : void {
     fs.writeFileSync(path.join(target_folder,`Create${cls.name}Handler.cs`), generateHandler(model, cls))
@@ -158,7 +158,8 @@ ${cls.enumentityatributes.map(enumEntityAtribute => createEnum(enumEntityAtribut
 
 
   function createEnum(enumEntityAtribute: EnumEntityAtribute):string {
-    return expandToString`
-    ${enumEntityAtribute.type.ref?.name} ${enumEntityAtribute.type.ref?.name.toLowerCase()},
-    `
+  const enumType = getRef(enumEntityAtribute.type);
+  return expandToString`
+    ${enumType?.name} ${enumType?.name?.toLowerCase()},
+  `
   }

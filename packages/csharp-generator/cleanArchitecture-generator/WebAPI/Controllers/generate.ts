@@ -1,5 +1,5 @@
 import path from "path"
-import { Model, isLocalEntity, isModule } from "../../../../shared/ast.js"
+import { Model, isLocalEntity, isModule } from "../../../../models/ast.js"
 import fs from "fs"
 import { generate as generateBaseControllers } from "./BaseControllers/generate.js"
 import { generate as generateEntities } from "./Entities/generate.js"

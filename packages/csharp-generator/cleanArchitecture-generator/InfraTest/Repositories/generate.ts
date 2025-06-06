@@ -1,8 +1,8 @@
 import { expandToStringWithNL } from "langium/generate";
-import { Attribute, isLocalEntity, isModule, LocalEntity, Model } from "../../../../shared/ast.js"
+import { Attribute, isLocalEntity, isModule, LocalEntity, Model, getRef } from "../../../../models/ast.js"
 import fs from "fs";
 import path from "path";
-import { processRelations, RelationInfo } from "../../../../shared/relations.js";
+import { processRelations, RelationInfo } from "../../../../models/relations.js";
 
 export function generate(model: Model, target_folder: string) : void {
 
@@ -180,10 +180,10 @@ function generateRelation(cls: LocalEntity, {tgt, card, owner}: RelationInfo) : 
  */
 function getAttrsAndRelations(cls: LocalEntity, relation_map: Map<LocalEntity, RelationInfo[]>) : {attributes: Attribute[], relations: RelationInfo[]} {
     // Se tem superclasse, puxa os atributos e relações da superclasse
-    if(cls.superType?.ref != null && isLocalEntity(cls.superType?.ref)) {
-        const parent =  cls.superType?.ref
+    const superType = getRef(cls.superType);
+    if(superType && isLocalEntity(superType)) {
+        const parent = superType;
         const {attributes, relations} = getAttrsAndRelations(parent, relation_map)
-
         return {
         attributes: attributes.concat(cls.attributes),
         relations: relations.concat(relation_map.get(cls) ?? [])
