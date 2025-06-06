@@ -1,8 +1,8 @@
 import path from "path";
 import fs from "fs";
-import { Attribute, ImportedEntity, LocalEntity, Model, Module, ModuleImport, isEnumX, isLocalEntity, isModule, isModuleImport } from "../../shared/ast.js";
-import { createPath } from "../../shared/generator-utils.js";
-import { RelationInfo, processRelations } from "../../shared/relations.js";
+import { Attribute, ImportedEntity, LocalEntity, Model, Module, ModuleImport, isEnumX, isLocalEntity, isModule, isModuleImport, getRef } from "../../models/ast.js";
+import { createPath } from "../../models/generator-utils.js";
+import { RelationInfo, processRelations } from "../../models/relations.js";
 import { Generated, expandToStringWithNL, toString } from "langium/generate";
 import { generateModel } from "./model-generator.js";
 import { generateEnum } from "./enum-generator.js";
@@ -63,35 +63,34 @@ function processImportedEntities (application: Model): Map<ImportedEntity, Modul
 /**
  * Dado um módulo, retorna todos as classes dele que são usadas como Superclasses
  */
-function processSupertypes(mod: Module) : Set<LocalEntity | undefined> {
-  const set: Set<LocalEntity | undefined> = new Set()
-  for(const cls of mod.elements.filter(isLocalEntity)) {
-    
-    if(cls.superType?.ref != null && isLocalEntity(cls.superType?.ref)) {
-      set.add(cls.superType?.ref)
+function processSupertypes(mod: Module): Set<LocalEntity> {
+  const set: Set<LocalEntity> = new Set();
+  for(const cls of mod.elements.filter(isLocalEntity) as LocalEntity[]) {
+    const superTypeRef = getRef(cls.superType);
+    if(superTypeRef && isLocalEntity(superTypeRef)) {
+      set.add(superTypeRef);
     }
   }
-  return set
+  return set;
 }
 
 /**
  * Retorna todos os atributos e relações de uma Class, incluindo a de seus supertipos
  */
-function getAttrsAndRelations(cls: LocalEntity, relation_map: Map<LocalEntity, RelationInfo[]>) : {attributes: Attribute[], relations: RelationInfo[]} {
-  // Se tem superclasse, puxa os atributos e relações da superclasse
-  if(cls.superType?.ref != null && isLocalEntity(cls.superType?.ref)) {
-    const parent =  cls.superType?.ref
-    const {attributes, relations} = getAttrsAndRelations(parent, relation_map)
-
+function getAttrsAndRelations(cls: LocalEntity, relation_map: Map<LocalEntity, RelationInfo[]>): {attributes: Attribute[], relations: RelationInfo[]} {
+  const superTypeRef = getRef(cls.superType);
+  if(superTypeRef && isLocalEntity(superTypeRef)) {
+    const parent = superTypeRef;
+    const {attributes, relations} = getAttrsAndRelations(parent, relation_map);
     return {
       attributes: attributes.concat(cls.attributes),
       relations: relations.concat(relation_map.get(cls) ?? [])
-    }
+    };
   } else {
     return {
       attributes: cls.attributes,
       relations: relation_map.get(cls) ?? []
-    }
+    };
   }
 }
 

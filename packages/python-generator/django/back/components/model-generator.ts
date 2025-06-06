@@ -1,12 +1,12 @@
-import { Attribute, EnumEntityAtribute, EnumX, LocalEntity, Module, Relation, isEnumX, isImportedEntity, isLocalEntity, isManyToMany, isModule, isModuleImport } from "../../../../shared/ast.js"
-import { base_ident, capitalizeString, topologicalSort } from "../../../../shared/generator-utils.js"
+import { Attribute, EnumEntityAtribute, EnumX, LocalEntity, Module, Relation, isEnumX, isImportedEntity, isLocalEntity, isManyToMany, isModule, isModuleImport, getRef } from "../../../../models/ast.js"
+import { base_ident, capitalizeString, topologicalSort } from "../../../../models/generator-utils.js"
 const ident = base_ident
 
 export function generateModels(m: Module) : string {
     const get_entities_prereqs = (e: LocalEntity) => {
-        
-        if(e.superType?.ref?.$container === e.$container && isLocalEntity(e.superType.ref)) {
-            return [e.superType.ref]
+        const superType = getRef(e.superType);
+        if(superType && superType.$container === e.$container && isLocalEntity(superType)) {
+            return [superType]
         }
         return []
     }
@@ -55,7 +55,7 @@ function generateImports(m: Module) : Map<string, Set<string>> {
     add_import('polymorphic.models', 'PolymorphicModel')
     for(const e of entities) {
         // Adiciona nos imports as entidades que vem de outros módulos que são usadas como supertipos
-        const supertype = e.superType?.ref
+        const supertype = getRef(e.superType)
         const supertype_origin = supertype?.$container
         if(supertype_origin) {
             // Se o supertype vem de um ModuleImport
@@ -69,12 +69,13 @@ function generateImports(m: Module) : Map<string, Set<string>> {
         }
         // Adiciona nos imports todas as entidades de outros módulos que são referênciadas em relações
         for(const r of e.relations) {
-            const entity_origin = r.type.ref?.$container
+            const relType = getRef(r.type);
+            const entity_origin = relType?.$container
             if(isModuleImport(entity_origin)) {
-                add_import(`${entity_origin.name}.models`, `${r.type.ref?.name}`)
+                add_import(`${entity_origin.name}.models`, `${relType?.name}`)
             }
             if(isModule(entity_origin) && (entity_origin !== m)) {
-                add_import(`apps.${entity_origin.name.toLowerCase()}.models`, `${r.type.ref?.name}`)
+                add_import(`apps.${entity_origin.name.toLowerCase()}.models`, `${relType?.name}`)
             }
         }
         // Adiciona nos imports os tipos que são usados por atributos
@@ -114,9 +115,11 @@ function generateEnum(e: EnumX) : string {
 }
 
 function generateModel(e: LocalEntity, set: Set<LocalEntity>) : string {
+    const superType = getRef(e.superType);
+    const superTypeName = superType?.name ?? 'PolymorphicModel, models.Model';
     const lines = [
-        `class ${e.name}(${e.superType?.ref?.name ?? 'PolymorphicModel, models.Model'}):`,
-        `${ident}"""${e.comment ?? ''}"""`,
+        `class ${e.name}(${superTypeName}):`,
+        `${ident}'''${e.comment ?? ''}'''`,
         ``,
         ...e.attributes.map(k => ident+generateAttribute(k)),
         ``,
@@ -139,8 +142,8 @@ function generateModel(e: LocalEntity, set: Set<LocalEntity>) : string {
 function generateEnumAttribute(e: EnumEntityAtribute) : string {
     let valor = ""
     let tamanho = 0
-
-    for(const a of (e.type.ref?.attributes ?? [])) {
+    const enumType = getRef(e.type)
+    for(const a of (enumType?.attributes ?? [])) {
         if(valor === "") {
             valor = a.name
         }
@@ -148,8 +151,7 @@ function generateEnumAttribute(e: EnumEntityAtribute) : string {
             tamanho = a.name.length
         }
     }
-
-    return `${e.name} = models.CharField(max_length=${tamanho}, choices=${e.type.ref?.name}.choices, default=${e.type.ref?.name}.${valor.toUpperCase()})`
+    return `${e.name} = models.CharField(max_length=${tamanho}, choices=${enumType?.name}.choices, default=${enumType?.name}.${valor.toUpperCase()})`
 } 
 
 function generateAttribute(a: Attribute) : string {
@@ -184,7 +186,7 @@ function generateAttribute(a: Attribute) : string {
 }
 
 function createRelation(r: Relation, set: Set<LocalEntity>) : string {
-    const tgt_entity = r.type.ref
+    const tgt_entity = getRef(r.type)
     let tgt_name: string
     // Auto relação
     if(tgt_entity === r.$container){
@@ -204,12 +206,15 @@ function createRelation(r: Relation, set: Set<LocalEntity>) : string {
     }
     // Relação interna ao módulo, com uma entidade ainda não declarada
     else {
-        tgt_name = `'${tgt_entity.name}'`
+        tgt_name = `'${tgt_entity?.name}'`
     }
 
     if(isManyToMany(r)) {
-        const through = r.by?.ref ?
-            `, through=${r.by.ref.name}` :
+        const through = r.by ? 
+            (() => { 
+                const byEntity = getRef(r.by); 
+                return byEntity ? `, through=${byEntity.name}` : ""; 
+            })() :
             ""
         return `${r.name} = models.ManyToManyField(${tgt_name}${through})`
     } else {
