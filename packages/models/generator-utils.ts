@@ -98,3 +98,31 @@ export function getQualifiedName(e: Entity) : string {
   }
   return qualified_name;
 }
+
+export function expandToString(strings: TemplateStringsArray, ...expr: any[]): string {
+  let result = '';
+  for (let i = 0; i < strings.length; i++) {
+    result += strings[i] + (expr[i] !== undefined ? expr[i] : '');
+  }
+  return result;
+}
+
+export function expandToStringWithNL(strings: TemplateStringsArray, ...expr: any[]): string {
+  return expandToString(strings, ...expr).replace(/\n{2,}/g, '\n');
+}
+
+export function toString(val: any): string {
+  if (typeof val === 'string') return val;
+  if (val && typeof val.toString === 'function') return val.toString();
+  return String(val);
+}
+
+// Stubs para compatibilidade
+export type Generated = string;
+export class CompositeGeneratorNode {
+  private content: string[] = [];
+  append(str: string) { this.content.push(str); }
+  appendNewLine() { this.content.push('\n'); }
+  toString() { return this.content.join(''); }
+}
+

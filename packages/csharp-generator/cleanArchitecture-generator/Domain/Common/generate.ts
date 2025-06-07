@@ -1,7 +1,7 @@
 import path from "path"
 import { Model } from "../../../../models/ast.js"
 import fs from "fs"
-import { expandToStringWithNL } from "langium/generate"
+import { expandToStringWithNL } from "../../../../models/generator-utils.js"
 
 export function generate(model: Model, target_folder: string) : void {
 
