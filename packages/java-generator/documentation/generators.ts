@@ -133,3 +133,5 @@ function createProjectReadme(configuration: Configuration): string{
 
     `
 }
+
+export {createProjectReadme, stackREADME, createGitlab };
