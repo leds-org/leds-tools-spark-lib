@@ -1,4 +1,4 @@
-import { Model } from "../../../shared/ast.js"
+import { Model } from "../../../models/ast.js"
 import { generate as GenerateProject} from "./project-generator.js"
 import { generateContext } from "./Context/generateContext.js"
 import { generate as GenerateMigrations } from "./Migrations/generate.js"

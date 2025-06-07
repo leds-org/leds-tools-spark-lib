@@ -1,5 +1,5 @@
-import { Entity, LocalEntity, Module, isLocalEntity } from "../../../../shared/ast.js"
-import { base_ident } from "../../../../shared/generator-utils.js"
+import { Entity, LocalEntity, Module, isLocalEntity } from "../../../../models/ast.js"
+import { base_ident } from "../../../../models/generator-utils.js"
 
 const ident = base_ident
 

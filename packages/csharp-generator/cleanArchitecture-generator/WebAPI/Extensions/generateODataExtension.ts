@@ -1,5 +1,5 @@
 import { expandToString } from "langium/generate";
-import { isLocalEntity, isModule, Model } from "../../../../shared/ast.js"
+import { isLocalEntity, isModule, Model } from "../../../../models/ast.js"
 
 export function generateODataExtension(model: Model): string{
     return expandToString`

@@ -1,5 +1,5 @@
-import { Model, ModuleImport, isModule, isModuleImport } from "../../../shared/ast.js";
-import { createPath, base_ident, capitalizeString } from "../../../shared/generator-utils.js";
+import { Model, ModuleImport, isModule, isModuleImport } from "../../../models/ast.js";
+import { createPath, base_ident, capitalizeString } from "../../../models/generator-utils.js";
 import path from 'path'
 import fs from 'fs'
 import { Generated, expandToStringWithNL, toString } from "langium/generate";
