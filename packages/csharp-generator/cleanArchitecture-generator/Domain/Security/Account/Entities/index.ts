@@ -1,0 +1,1 @@
+export { generate as generateDomainSecAccEntities } from './generate.js';

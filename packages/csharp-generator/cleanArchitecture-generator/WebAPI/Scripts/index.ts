@@ -1,0 +1,1 @@
+export { generate as generateWebScripts} from './generate.js';

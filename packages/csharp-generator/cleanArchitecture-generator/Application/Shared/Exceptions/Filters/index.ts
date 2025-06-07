@@ -1,0 +1,1 @@
+export { generate as generateSharedexception } from '../Filters/generate.js';

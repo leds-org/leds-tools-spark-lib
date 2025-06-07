@@ -1,0 +1,1 @@
+export { generate as generateSharedbehavior } from '../Behavior/generate.js';
