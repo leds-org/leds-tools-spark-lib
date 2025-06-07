@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
-import { Attribute, ImportedEntity, LocalEntity, Model, Module, ModuleImport, isLocalEntity, isModule, isModuleImport } from "../../../../shared/ast.js";
-import { RelationInfo, processRelations } from "../../../../shared/relations.js";
+import { Attribute, ImportedEntity, LocalEntity, Model, Module, ModuleImport, isLocalEntity, isModule, isModuleImport, getRef } from "../../../../models/ast.js";
+import { RelationInfo, processRelations } from "../../../../models/relations.js";
 import { toString } from "langium/generate";
 import { generateModel } from "./model-generator.js";
 
@@ -53,23 +53,23 @@ export function generate(model: Model, target_folder: string) : void {
   function processSupertypes(mod: Module) : Set<LocalEntity | undefined> {
     const set: Set<LocalEntity | undefined> = new Set()
     for(const cls of mod.elements.filter(isLocalEntity)) {
-      
-      if(cls.superType?.ref != null && isLocalEntity(cls.superType?.ref)) {
-        set.add(cls.superType?.ref)
+      const superType = getRef(cls.superType);
+      if(superType && isLocalEntity(superType)) {
+        set.add(superType)
       }
     }
     return set
 }
 
-/**
+ /**
  * Retorna todos os atributos e relações de uma Class, incluindo a de seus supertipos
  */
 function getAttrsAndRelations(cls: LocalEntity, relation_map: Map<LocalEntity, RelationInfo[]>) : {attributes: Attribute[], relations: RelationInfo[]} {
     // Se tem superclasse, puxa os atributos e relações da superclasse
-    if(cls.superType?.ref != null && isLocalEntity(cls.superType?.ref)) {
-      const parent =  cls.superType?.ref
+    const superType = getRef(cls.superType);
+    if(superType && isLocalEntity(superType)) {
+      const parent = superType;
       const {attributes, relations} = getAttrsAndRelations(parent, relation_map)
-  
       return {
         attributes: attributes.concat(cls.attributes),
         relations: relations.concat(relation_map.get(cls) ?? [])

@@ -1,11 +1,10 @@
-
 import { generateAdmin } from './admin-generator.js'
 import { generateModels } from './model-generator.js'
 import { generateURLAPI } from './url-generator.js'
 import { generateAPIView } from './view-generator.js'
 import { generateSerializer } from './serialize-generator.js'
-import { base_ident, capitalizeString, createPath } from '../../../../shared/generator-utils.js'
-import { Attribute, Entity, LocalEntity, Model, Module, isLocalEntity, isModule, Actor } from '../../../../shared/ast.js'
+import { base_ident, capitalizeString, createPath } from '../../../../models/generator-utils.js'
+import { Attribute, Entity, LocalEntity, Model, Module, isLocalEntity, isModule, Actor, getRef } from '../../../../models/ast.js'
 import path from 'path'
 import fs from 'fs'
 import { expandToStringWithNL } from 'langium/generate'
@@ -15,8 +14,8 @@ export function generateModules(app: Model, target_folder: string) : void {
     // Processa quais Entidades representam algum ator
     const entity_to_actor = new Map<Entity, Actor>()
     // app.abstractElements.filter(isActor).forEach(a => {
-    //     if(a.entity.ref) {
-    //         entity_to_actor.set(a.entity.ref, a)
+    //     if(a.entity && getRef(a.entity)) {
+    //         entity_to_actor.set(getRef(a.entity), a)
     //     }
     // })
 

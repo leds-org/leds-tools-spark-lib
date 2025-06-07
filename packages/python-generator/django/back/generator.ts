@@ -1,4 +1,4 @@
-import { Model } from "../../../shared/ast.js";
+import { Model } from "../../../models/ast.js";
 import { generateModuleGenerator } from "./components/index.js";
 import {generate as generateSettings} from "./setting-generator.js"
 import {generateBDD} from "./bdd/index.js"

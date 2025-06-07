@@ -16,7 +16,7 @@
     "commit": "cz"
   },
   "devDependencies": {
-    "@types/node": "^22.15.3",
+    "@types/node": "^22.15.30",
     "commitizen": "^4.3.1",
     "cz-conventional-changelog": "^3.3.0",
     "langium": "^3.5.0",

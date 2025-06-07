@@ -1,4 +1,4 @@
-import { Model } from "../../../../../shared/ast.js"
+import { Model } from "../../../../../models/ast.js"
 import fs from "fs"
 import { generate as generateEntities } from "./Entities/generate.js"
 import { generate as generateValueObjects } from "./ValueObjects/generate.js"

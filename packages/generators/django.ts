@@ -1,8 +1,8 @@
-import { Model } from "../shared/ast.js"
+import { Model } from "../models/ast.js"
 import fs from "fs";
 
-import {django} from "../generators/index.js"
-import { createPath } from "../shared/generator-utils.js";
+import {django} from "./index.js"
+import { createPath } from "../models/generator-utils.js";
 
 export function generate(model: Model, target_folder: string) : void {
 

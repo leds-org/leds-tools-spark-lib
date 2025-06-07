@@ -1,7 +1,8 @@
 import path from 'path'
 import fs from 'fs'
-import { createPath } from '../../shared/generator-utils.js'
-import { LocalEntity, Model, isLocalEntity, isModule } from '../../shared/ast.js'
+import { createPath } from '../../models/generator-utils.js'
+import { Attribute, LocalEntity, getRef, isLocalEntity } from "../../models/ast.js"
+import { Model, isModule } from '../../models/ast.js'
 import { Generated, expandToStringWithNL, toString } from 'langium/generate'
 //Relation
 
@@ -20,20 +21,20 @@ export function generateGraphQL(application: Model, target_folder: string) {
 /*
 function generateRelationSchemaGraphQL(relation: Relation): Generated{
     switch(relation.$type) {
-      case "OneToMany": return `[${relation.type.ref?.name}]`
-      default: return `${relation.type.ref?.name}`
+      case "OneToMany": return `[${getRef(relation.type)?.name}]`
+      default: return `${getRef(relation.type)?.name}`
     }
     return ""
   }
   */
-  function generateTypeSchemaGraphQL (entity: LocalEntity): Generated{
-
-    var att = entity.attributes;
-    if (isLocalEntity(entity.superType?.ref)) {
-      att = entity.attributes.concat(entity.superType?.ref?.attributes ?? [] )
+  function generateTypeSchemaGraphQL(entity: LocalEntity): Generated {
+    let att: Attribute[] = entity.attributes;
+    const superTypeRef = getRef(entity.superType);
+    if (superTypeRef && isLocalEntity(superTypeRef)) {
+      att = entity.attributes.concat(superTypeRef.attributes ?? []);
     }
     
-    //var relation = entity.relations.concat(entity.superType?.ref?.relations ?? [] )
+    //var relation = entity.relations.concat(getRef(entity.superType)?.relations ?? [] )
     //${relation.map(relation => `${relation.name}:${generateRelationSchemaGraphQL(relation)}`).join("\n")}
     return expandToStringWithNL`
     type ${entity.name}{
@@ -43,10 +44,11 @@ function generateRelationSchemaGraphQL(relation: Relation): Generated{
     `
   }
   
-  function generateInputTypeSchemaGraphQL(entity: LocalEntity): Generated{
-    var att = entity.attributes;  
-    if (isLocalEntity(entity.superType?.ref)){
-      att = entity.attributes.concat(entity.superType?.ref?.attributes ?? [] )
+  function generateInputTypeSchemaGraphQL(entity: LocalEntity): Generated {
+    let att: Attribute[] = entity.attributes;
+    const superTypeRef = getRef(entity.superType);
+    if (superTypeRef && isLocalEntity(superTypeRef)) {
+      att = entity.attributes.concat(superTypeRef.attributes ?? []);
     }
     
     //var relation = entity.relations.concat(entity.superType?.ref?.relations ?? [] )
@@ -58,25 +60,28 @@ function generateRelationSchemaGraphQL(relation: Relation): Generated{
     `
   }
   
-  function generateSchemaGraphQL (application: Model): Generated{
+  function generateSchemaGraphQL(application: Model): Generated {
 
     const modules = application.abstractElements.filter(isModule);
-    const all_entities = modules.map(module => module.elements.filter(isLocalEntity)).flat();
+    // Only keep LocalEntity elements
+    const all_entities: LocalEntity[] = modules
+      .map(module => module.elements.filter(isLocalEntity) as LocalEntity[])
+      .flat();
 
     return expandToStringWithNL`
     
-    ${all_entities.map(entity => entity.is_abstract ? "": toString(generateTypeSchemaGraphQL(entity))).join("\n")}
+    ${all_entities.map((entity: LocalEntity) => entity.is_abstract ? "" : toString(generateTypeSchemaGraphQL(entity))).join("\n")}
     
-    ${all_entities.map(entity => entity.is_abstract ? "":  toString(generateInputTypeSchemaGraphQL(entity))).join("\n")}
+    ${all_entities.map((entity: LocalEntity) => entity.is_abstract ? "" : toString(generateInputTypeSchemaGraphQL(entity))).join("\n")}
   
     type Query{
-      ${all_entities.map(entity => entity.is_abstract ? "": `findAll${entity.name}s:[${entity.name}]`).join("\n")}
-      ${all_entities.map(entity => entity.is_abstract ? "": `findByID${entity.name} (id: ID!):${entity.name}`).join("\n")}
+      ${all_entities.map((entity: LocalEntity) => entity.is_abstract ? "" : `findAll${entity.name}s:[${entity.name}]`).join("\n")}
+      ${all_entities.map((entity: LocalEntity) => entity.is_abstract ? "" : `findByID${entity.name} (id: ID!):${entity.name}`).join("\n")}
     }
     
     type Mutation{
-      ${all_entities.map(entity => entity.is_abstract ? "": `create${entity.name}(input: ${entity.name}Input):${entity.name}`).join("\n")}
-      ${all_entities.map(entity => entity.is_abstract ? "": `delete${entity.name} (id: ID!):${entity.name}`).join("\n")}
-      ${all_entities.map(entity => entity.is_abstract ? "": `update${entity.name} (id: ID!, input: ${entity.name}Input):${entity.name}`).join("\n")}
+      ${all_entities.map((entity: LocalEntity) => entity.is_abstract ? "" : `create${entity.name}(input: ${entity.name}Input):${entity.name}`).join("\n")}
+      ${all_entities.map((entity: LocalEntity) => entity.is_abstract ? "" : `delete${entity.name} (id: ID!):${entity.name}`).join("\n")}
+      ${all_entities.map((entity: LocalEntity) => entity.is_abstract ? "" : `update${entity.name} (id: ID!, input: ${entity.name}Input):${entity.name}`).join("\n")}
     }`
   }

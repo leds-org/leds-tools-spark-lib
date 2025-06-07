@@ -2,7 +2,7 @@ import fs from "fs";
 import path from "path";
 import { expandToStringWithNL } from "langium/generate";
 
-import { Configuration, Model } from "../../../shared/ast.js";
+import { Configuration, Model } from "../../../models/ast.js";
 
 
 export function generate(model: Model, target_folder: string) : void {

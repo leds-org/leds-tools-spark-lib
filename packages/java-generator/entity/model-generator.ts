@@ -1,11 +1,11 @@
 import { CompositeGeneratorNode, Generated, expandToString, expandToStringWithNL, toString } from "langium/generate"
-import { Attribute, Entity, EnumEntityAtribute, ImportedEntity, LocalEntity, ModuleImport, isLocalEntity } from "../../shared/ast.js"
-import { RelationInfo } from "../../shared/relations.js"
-import { capitalizeString } from "../../shared/generator-utils.js"
+import { Attribute, Entity, EnumEntityAtribute, ImportedEntity, LocalEntity, ModuleImport, isLocalEntity, getRef } from "../../models/ast.js"
+import { RelationInfo } from "../../models/relations.js"
+import { capitalizeString } from "../../models/generator-utils.js"
 
 
 export function generateModel(cls: LocalEntity, is_supertype: boolean, relations: RelationInfo[], package_name: string, importedEntities: Map<ImportedEntity, ModuleImport | undefined>) : Generated {
-  const supertype = cls.superType?.ref  
+  const supertype = getRef(cls.superType)
   const is_abstract = cls?.is_abstract
 
   const external_relations = relations.filter(relation => relation.tgt.$container != cls.$container)
@@ -198,10 +198,11 @@ function generateRelation(cls: LocalEntity, {tgt, card, owner}: RelationInfo) : 
 }
 
 function createEnum(enumEntityAtribute: EnumEntityAtribute):string {
+  const enumType = getRef(enumEntityAtribute.type);
   return expandToString`
   @Builder.Default
   @Enumerated(EnumType.STRING)
-  private ${enumEntityAtribute.type.ref?.name} ${enumEntityAtribute.name.toLowerCase()} = ${enumEntityAtribute.type.ref?.name}.${enumEntityAtribute.type.ref?.attributes[0].name.toUpperCase()};
+  private ${enumType?.name} ${enumEntityAtribute.name.toLowerCase()} = ${enumType?.name}.${enumType?.attributes[0].name.toUpperCase()};
   `
 }
 

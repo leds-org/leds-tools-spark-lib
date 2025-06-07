@@ -1,5 +1,5 @@
 import { expandToString } from "langium/generate"
-import { LocalEntity, Model } from "../../../../../shared/ast.js"
+import { LocalEntity, Model } from "../../../../../models/ast.js"
 
 export function generate(model: Model, cls: LocalEntity): string {
     return expandToString`

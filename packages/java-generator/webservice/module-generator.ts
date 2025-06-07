@@ -1,7 +1,7 @@
 import path from "path";
 import fs from "fs";
-import { Attribute, Configuration, LocalEntity, Model, isLocalEntity, isModule } from "../../shared/ast.js";
-import { capitalizeString, createPath } from "../../shared/generator-utils.js";
+import { Attribute, Configuration, LocalEntity, Model, isLocalEntity, isModule, getRef } from "../../models/ast.js";
+import { capitalizeString, createPath } from "../../models/generator-utils.js";
 import { Generated, expandToString, expandToStringWithNL, toString } from "langium/generate";
 
 
@@ -100,8 +100,9 @@ function generateClassRepository(cls: LocalEntity, package_name: string) : Gener
 function generateRecord(cls: LocalEntity, package_name: string) : Generated {
 
   var att = cls.attributes
-  if (isLocalEntity(cls.superType?.ref)){
-    att = cls.attributes.concat(cls.superType?.ref?.attributes ?? [] )
+  const superTypeRef = getRef(cls.superType);
+  if (isLocalEntity(superTypeRef)) {
+    att = cls.attributes.concat(superTypeRef.attributes ?? [])
   }
 
   return expandToStringWithNL`
@@ -131,8 +132,9 @@ function generateTypeAttribute(attribute:Attribute): Generated{
 function generateClassController(cls: LocalEntity, package_name: string) : Generated {
 
   var att = cls.attributes
-  if (isLocalEntity(cls.superType?.ref)){
-    att = cls.attributes.concat(cls.superType?.ref?.attributes ?? [] )
+  const superTypeRef = getRef(cls.superType);
+  if (isLocalEntity(superTypeRef)) {
+    att = cls.attributes.concat(superTypeRef.attributes ?? [])
   }
 
   return expandToStringWithNL`

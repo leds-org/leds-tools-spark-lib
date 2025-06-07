@@ -1,8 +1,8 @@
 import { expandToString } from "langium/generate";
-import { Attribute, LocalEntity, Model, isLocalEntity, isModule } from "../../../../shared/ast.js"
+import { Attribute, LocalEntity, Model, isLocalEntity, isModule, getRef } from "../../../../models/ast.js"
 import fs from "fs"
 import path from "path";
-import { RelationInfo, processRelations } from "../../../../shared/relations.js";
+import { RelationInfo, processRelations } from "../../../../models/relations.js";
 import { generate as generateCreate } from "./Case/CreateCase/generate.js"
 import { generate as generateDelete } from "./Case/DeleteCase/generate.js"
 import { generate as generateUpdate } from "./Case/UpdateCase/generate.js"
@@ -181,10 +181,10 @@ namespace ${model.configuration?.name}.Application.UseCase.BaseCase
 
 function getAttrsAndRelations(cls: LocalEntity, relation_map: Map<LocalEntity, RelationInfo[]>) : {attributes: Attribute[], relations: RelationInfo[]} {
     // Se tem superclasse, puxa os atributos e relações da superclasse
-    if(cls.superType?.ref != null && isLocalEntity(cls.superType?.ref)) {
-      const parent =  cls.superType?.ref
+    const superType = getRef(cls.superType);
+    if(superType && isLocalEntity(superType)) {
+      const parent = superType;
       const {attributes, relations} = getAttrsAndRelations(parent, relation_map)
-  
       return {
         attributes: attributes.concat(cls.attributes),
         relations: relations.concat(relation_map.get(cls) ?? [])

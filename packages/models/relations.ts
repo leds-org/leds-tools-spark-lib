@@ -1,5 +1,4 @@
-import { LocalEntity, isLocalEntity } from "./ast.js"
-
+import { LocalEntity, isLocalEntity, getRef } from "./ast.js";
 
 export type RelationInfo = {
   tgt: LocalEntity,
@@ -7,7 +6,7 @@ export type RelationInfo = {
   owner: boolean
 }
 type RelationType = 'OneToMany' | 'OneToOne' | 'ManyToOne' | 'ManyToMany'
- 
+
 function revert_card(card: RelationType) : RelationType {
   switch(card) {
   case 'OneToOne':
@@ -48,19 +47,17 @@ export function processRelations(
       owner: false
     })
   }
-   
+
   for(const entity of localEntities) {
-    
-    
-    for (const relationship of entity.relations){
-        
-        if (isLocalEntity(relationship.type.ref)){
-          if(relationship.$type === "OneToMany") {
-            add_relation(relationship.type.ref, entity, "ManyToOne")
-          } else {
-            add_relation(entity, relationship.type.ref, relationship.$type)
-          }
+    for (const relationship of entity.relations) {
+      const relationType = getRef(relationship.type);
+      if (isLocalEntity(relationType)) {
+        if(relationship.$type === "OneToMany") {
+          add_relation(relationType, entity, "ManyToOne")
+        } else {
+          add_relation(entity, relationType, relationship.$type)
         }
+      }
     }
   }
 
