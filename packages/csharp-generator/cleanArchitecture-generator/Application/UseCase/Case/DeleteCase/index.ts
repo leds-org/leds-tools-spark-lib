@@ -1,0 +1,1 @@
+export { generate as generateDeletecase } from '../DeleteCase/generate.js';

@@ -1,0 +1,1 @@
+export { generate as generateSendresetpassword } from '../SendResetPassword/generate.js';

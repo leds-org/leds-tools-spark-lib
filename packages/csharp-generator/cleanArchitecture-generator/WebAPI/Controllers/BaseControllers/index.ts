@@ -1,0 +1,1 @@
+export { generate as generateWebContBasecontrollers } from './generate.js';

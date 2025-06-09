@@ -1,0 +1,1 @@
+export { generate as generateDocumentation } from '../documentation/generator.js';
